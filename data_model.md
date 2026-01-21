@@ -71,6 +71,7 @@ CREATE TABLE ticket_comments (
 | phone        | VARCHAR   | Contact number |
 | email        | VARCHAR   | Email address |
 | is_active    | VARCHAR   | Active flag |
+| customer_id    | INT   | customer id |
 
 **Stores all user information for assignments and actions.**
 ~~~sql
@@ -80,7 +81,9 @@ CREATE TABLE users (
     email VARCHAR(150) UNIQUE,
     role VARCHAR(50), -- [Agent / Customer / Admin]
     is_active BOOLEAN,
-    created_at TIMESTAMP
+    customer_id INT,  --[null for employees]    
+    created_at TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
 );
 ~~~
 ---
@@ -90,7 +93,7 @@ CREATE TABLE users (
 |-------------------|-----------|-------------|
 | customer_id (PK)  | INT    | Customer ID |
 | customer_name     | VARCHAR   | Customer name |
-| address           | VARCHAR      | Address |
+| email           | VARCHAR      | Address |
 | phone             | VARCHAR   | Contact |
 
 **Provides customer details linked to tickets.**
@@ -98,7 +101,7 @@ CREATE TABLE users (
 CREATE TABLE customers (
     customer_id INT PRIMARY KEY,
     customer_name VARCHAR(150),
-    address VARCHAR,
+    email VARCHAR,
     phone VARCHAR(20)
 );
 ~~~
