@@ -2,7 +2,7 @@
 
 ## Fact Tables
 
-### 1. FACT_TICKETS
+### 1. TICKETS
 | Column Name      | Data Type  | Description |
 |------------------|-----------|-------------|
 | ticket_id(PK)    | INT       | Unique ticket identifier |
@@ -23,7 +23,7 @@ A customer can log a ticket in two ways: either by raising it themselves or by c
 
 ---
 
-### 2. FACT_TICKET_COMMENTS
+### 2. TICKET_COMMENTS
 | Column Name        | Data Type  | Description |
 |--------------------|-----------|-------------|
 | comment_id     | INT    | Unique comment |
@@ -38,7 +38,7 @@ A customer can log a ticket in two ways: either by raising it themselves or by c
 
 ## Dimension Tables
 
-### 4. DIM_USERS
+### 4. USERS
 | Column Name   | Data Type | Description |
 |--------------|-----------|-------------|
 | user_id (PK) | INT    | Unique user ID |
@@ -52,7 +52,7 @@ A customer can log a ticket in two ways: either by raising it themselves or by c
 
 ---
 
-### 5. DIM_CUSTOMERS
+### 5. CUSTOMERS
 | Column Name        | Data Type | Description |
 |-------------------|-----------|-------------|
 | customer_id (PK)  | INT    | Customer ID |
@@ -64,7 +64,7 @@ A customer can log a ticket in two ways: either by raising it themselves or by c
 
 ---
 
-### 6. DIM_TICKET_STATUS
+### 6. TICKET_STATUS
 | Column Name    | Data Type | Description |
 |---------------|-----------|-------------|
 | status_id (PK)| INT       | Status ID |
@@ -74,7 +74,7 @@ A customer can log a ticket in two ways: either by raising it themselves or by c
 
 ---
 
-### 7. DIM_TICKET_PRIORITY
+### 7. TICKET_PRIORITY
 | Column Name        | Data Type | Description |
 |-------------------|-----------|-------------|
 | priority_id (PK)  | INT       | Priority ID |
@@ -84,7 +84,7 @@ A customer can log a ticket in two ways: either by raising it themselves or by c
 
 ---
 
-### 8. DIM_TICKET_CATEGORY
+### 8. TICKET_CATEGORY
 | Column Name        | Data Type | Description |
 |-------------------|-----------|-------------|
 | category_id (PK)  | INT       | Category ID |
