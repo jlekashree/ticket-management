@@ -21,8 +21,6 @@
      - Description  
      - Status, Priority, Category  
      - Comments / history  
-   - Actions available:  
-     - **Add Comment** → Add notes or updates to the ticket  
 
 5. **Create Ticket**  
    - Raise a new support ticket  
