@@ -10,16 +10,31 @@
 | category_id  | INT       | Issue type |
 | priority_id  | INT       | Ticket priority |
 | status_id    | INT       | Current ticket status |
-| created_by   | INT    | Who created the ticket |
+| created_by   | INT    | Who created the ticket(can be customers or support team) |
 | assigned_to | INT    | Who is currently assigned |
 | description      | VARCHAR      | Issue description |
-| location         | VARCHAR   | Issue location |
 | created_at       | TIMESTAMP | Creation time |
 | updated_at       | TIMESTAMP | Last update time |
 
 **Stores the current state of all tickets.**
 
-A customer can log a ticket in two ways: either by raising it themselves or by contacting the support team, who will create the ticket on their behalf.
+~~~sql
+CREATE TABLE tickets (
+    ticket_id INT PRIMARY KEY,
+    customer_id INT,
+    category_id INT,
+    priority_id INT,
+    status_id INT,
+    created_by INT,
+    assigned_to INT,
+    description VARCHAR,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+    FOREIGN KEY (status_id) REFERENCES ticket_status(status_id),
+    FOREIGN KEY (priority_id) REFERENCES ticket_priority(priority_id)
+);
+~~~
 
 ---
 
@@ -33,7 +48,16 @@ A customer can log a ticket in two ways: either by raising it themselves or by c
 | created_at         | TIMESTAMP | Comment time |
 
 **Tracks all interactions on tickets for maintaining history.**
-
+~~~sql
+CREATE TABLE ticket_comments (
+    comment_id INT PRIMARY KEY,
+    ticket_id INT,
+    commented_by INT,
+    comment_text VARCHAR,
+    created_at TIMESTAMP,
+    FOREIGN KEY (ticket_id) REFERENCES tickets(ticket_id)
+);
+~~~
 ---
 
 ## Dimension Tables
@@ -49,7 +73,16 @@ A customer can log a ticket in two ways: either by raising it themselves or by c
 | is_active    | VARCHAR   | Active flag |
 
 **Stores all user information for assignments and actions.**
-
+~~~sql
+CREATE TABLE users (
+    user_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(150) UNIQUE,
+    role VARCHAR(50), -- [Agent / Customer / Admin]
+    is_active BOOLEAN,
+    created_at TIMESTAMP
+);
+~~~
 ---
 
 ### 5. CUSTOMERS
@@ -57,10 +90,18 @@ A customer can log a ticket in two ways: either by raising it themselves or by c
 |-------------------|-----------|-------------|
 | customer_id (PK)  | INT    | Customer ID |
 | customer_name     | VARCHAR   | Customer name |
-| address           | TEXT      | Address |
+| address           | VARCHAR      | Address |
 | phone             | VARCHAR   | Contact |
 
 **Provides customer details linked to tickets.**
+~~~sql
+CREATE TABLE customers (
+    customer_id INT PRIMARY KEY,
+    customer_name VARCHAR(150),
+    address VARCHAR,
+    phone VARCHAR(20)
+);
+~~~
 
 ---
 
@@ -71,6 +112,12 @@ A customer can log a ticket in two ways: either by raising it themselves or by c
 | status_name   | VARCHAR   | Open / Assigned / In Progress / Resolved / Closed / Cancelled |
 
 **Defines ticket lifecycle states.**
+~~~sql
+CREATE TABLE ticket_status (
+    status_id INT PRIMARY KEY,
+    status_name VARCHAR(50)
+);
+~~~
 
 ---
 
@@ -80,7 +127,13 @@ A customer can log a ticket in two ways: either by raising it themselves or by c
 | priority_id (PK)  | INT       | Priority ID |
 | priority_name     | VARCHAR   | Low / Medium / High / Critical |
 
- **Specifies ticket urgency to prioritize work.** 
+ **Specifies ticket urgency to prioritize work.**
+ ~~~sql
+CREATE TABLE ticket_priority (
+    priority_id INT PRIMARY KEY,
+    priority_name VARCHAR(50)
+);
+~~~
 
 ---
 
@@ -91,3 +144,30 @@ A customer can log a ticket in two ways: either by raising it themselves or by c
 | category_name     | VARCHAR   | Network / Hardware / Software / Installation |
 
 **Categorizes type of issues for routing and reporting.**
+
+~~~sql
+CREATE TABLE ticket_category (
+    category_id INT PRIMARY KEY,
+    category_name VARCHAR(100)
+);
+~~~
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
