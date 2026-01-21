@@ -1,7 +1,7 @@
 # Ticket Management System – Screen-wise SQL Queries
 
-* **Fact Tables:** `fact_tickets`, `fact_ticket_comments`
-* **Dimension Tables:** `dim_users`, `dim_customers`, `dim_ticket_status`, `dim_ticket_priority`, `dim_ticket_category`
+* **Fact Tables:** `tickets`, `ticket_comments`
+* **Dimension Tables:** `users`, `customers`, `ticket_status`, `ticket_priority`, `ticket_category`
 
 ---
 
@@ -11,7 +11,7 @@
 * **Data Query:**
     ```sql
     SELECT user_id, role
-    FROM dim_users
+    FROM users
     WHERE email = :email
       AND is_active = TRUE;
     ```
@@ -29,8 +29,8 @@
     SELECT
         s.status_name,
         COUNT(*) AS ticket_count
-    FROM fact_tickets t
-    JOIN dim_ticket_status s
+    FROM tickets t
+    JOIN ticket_status s
       ON t.status_id = s.status_id
     WHERE t.assigned_to = :user_id
     GROUP BY s.status_name
@@ -53,12 +53,12 @@
         p.priority_name,
         s.status_name,
         t.created_at
-    FROM fact_tickets t
-    JOIN dim_customers c
+    FROM tickets t
+    JOIN customers c
       ON t.customer_id = c.customer_id
-    JOIN dim_ticket_priority p
+    JOIN ticket_priority p
       ON t.priority_id = p.priority_id
-    JOIN dim_ticket_status s
+    JOIN ticket_status s
       ON t.status_id = s.status_id
     WHERE t.assigned_to = :user_id
     ORDER BY p.priority_id DESC, t.created_at ASC;
@@ -83,12 +83,12 @@
         c.address,
         s.status_name,
         p.priority_name
-    FROM fact_tickets t
-    JOIN dim_customers c
+    FROM tickets t
+    JOIN customers c
       ON t.customer_id = c.customer_id
-    JOIN dim_ticket_status s
+    JOIN ticket_status s
       ON t.status_id = s.status_id
-    JOIN dim_ticket_priority p
+    JOIN ticket_priority p
       ON t.priority_id = p.priority_id
     WHERE t.ticket_id = :ticket_id;
     ```
@@ -106,12 +106,12 @@
 * **Data Query:**
     ```sql
     SELECT status_id, status_name
-    FROM dim_ticket_status
+    FROM ticket_status
     ORDER BY status_id;
     ```
 * **Action Query:**
     ```sql
-    UPDATE fact_tickets
+    UPDATE tickets
     SET status_id = :status_id,
         updated_at = CURRENT_TIMESTAMP
     WHERE ticket_id = :ticket_id;
@@ -126,7 +126,7 @@
 * **Data Query:** N/A (User inputs text)
 * **Action Query:**
     ```sql
-    INSERT INTO fact_ticket_comments (
+    INSERT INTO ticket_comments (
         ticket_id,
         commented_by,
         comment_text,
@@ -149,19 +149,19 @@
 * **Data Query:**
     ```sql
     SELECT ticket_id, status_id
-    FROM fact_tickets
+    FROM tickets
     WHERE ticket_id = :ticket_id;
     ```
 * **Action Queries (Transactional):**
     ```sql
     -- Update status to 'Cancelled' (Assumes ID 6)
-    UPDATE fact_tickets
+    UPDATE tickets
     SET status_id = 6,
         updated_at = CURRENT_TIMESTAMP
     WHERE ticket_id = :ticket_id;
 
     -- Record cancellation reason
-    INSERT INTO fact_ticket_comments (
+    INSERT INTO ticket_comments (
         ticket_id,
         commented_by,
         comment_text,
@@ -184,7 +184,7 @@
 * **Data Query:** N/A (UI Form)
 * **Action Query:**
     ```sql
-    INSERT INTO fact_tickets (
+    INSERT INTO tickets (
         customer_id,
         category_id,
         priority_id,
@@ -210,7 +210,7 @@
 ## Notes & Best Practices
 1.  **Transactions:** Always use database transactions for multi-step updates (like *Cancel Ticket*) to ensure data integrity.
 2.  **Indexing:** Ensure indexes are created on frequently filtered columns:
-    * `fact_tickets.assigned_to`
-    * `fact_tickets.status_id`
-    * `fact_tickets.created_at`
+    * `tickets.assigned_to`
+    * `tickets.status_id`
+    * `tickets.created_at`
 3.  **Referential Integrity:** Enforce Foreign Key constraints between fact and dimension tables.
