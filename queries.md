@@ -13,9 +13,10 @@
 **Data Query:**
 
 ~~~sql
-SELECT user_id, role
+SELECT user_id, role,customer_id
 FROM users
 WHERE email = :email
+  AND password_hash = :password_hash
   AND is_active = TRUE;
 ~~~
 
@@ -23,10 +24,131 @@ WHERE email = :email
 
 **Action Query:** N/A  
 
-**On-click Action:** Navigate to Dashboard on successful authentication.
+**On-click Action:** Navigate to the appropriate dashboard based on user role:
+
+Customer → Customer Dashboard
+
+Support/Admin → Support Dashboard
 
 ---
+### CUSTOMERS
+### 2. Customer Dashboard
+**Purpose:** Display all tickets raised by the logged-in customer and provide quick access to ticket details.
 
+**Data Required:**
+- Ticket ID
+- Category Name
+- Status Name
+- Priority Name
+- Created At
+
+**Data Query:**
+
+~~~sql
+SELECT t.ticket_id,
+       tc.category_name,
+       ts.status_name,
+       tp.priority_name,
+       t.created_at
+FROM tickets t
+JOIN ticket_category tc ON t.category_id = tc.category_id
+JOIN ticket_status ts ON t.status_id = ts.status_id
+JOIN ticket_priority tp ON t.priority_id = tp.priority_id
+WHERE t.customer_id = :customer_id
+ORDER BY t.created_at DESC;
+
+~~~
+
+**Reason:** Ensures that only tickets belonging to the logged-in customer are displayed and provides necessary details for overview.
+
+**Action Query:** N/A  
+
+**On-click Action:** 
+- Click on a ticket → Navigate to Ticket Details Screen
+- Click on “New Ticket” → Navigate to Create Ticket Screen
+
+---
+### 3. Create Ticket Screen
+**Purpose:** Allow the customer to raise a new ticket with required details.
+
+**Data Required:**
+- Customer ID (from session)
+- Category ID
+- Priority ID
+- Description
+
+**Data Query:** N/A
+**Action Query:**
+~~~sql
+INSERT INTO tickets (
+    ticket_id,
+    customer_id,
+    category_id,
+    priority_id,
+    status_id,
+    created_by,
+    description,
+    created_at
+)
+VALUES (
+    :ticket_id,
+    :customer_id,
+    :category_id,
+    :priority_id, --[open by default]
+    :open_status_id,
+    :user_id,            
+    :description,       
+    NOW()
+);
+
+~~~
+
+**Reason:** Creates a new ticket linked to the customer, sets the default status as “Open”, and tracks who created it.   
+
+**On-click Action:** 
+Submit → Insert ticket into database and Show success message.
+
+---
+### 4. Ticket Details Screen
+**Purpose:** Display full details of a ticket on clicking the ticket.
+
+**Data Required:**
+- Ticket ID
+- Description
+- Status Name
+- Priority Name
+- Category Name
+- Comments
+
+**Data Query:**
+
+~~~sql
+SELECT t.ticket_id,
+       t.description,
+       ts.status_name,
+       tp.priority_name,
+       tc.category_name,
+       c.comment_id,
+       c.commented_by,
+       c.comment_text,
+       c.created_at
+FROM tickets t
+JOIN ticket_status ts ON t.status_id = ts.status_id
+JOIN ticket_priority tp ON t.priority_id = tp.priority_id
+JOIN ticket_category tc ON t.category_id = tc.category_id
+LEFT JOIN ticket_comments c ON t.ticket_id = c.ticket_id
+WHERE t.ticket_id = :ticket_id
+  AND t.customer_id = :customer_id;
+~~~
+
+**Reason:** Ensures only the owner of the ticket can view it; provides full ticket history.
+
+**Action Query:** N/A  
+
+**On-click Action:** Click “Add Comment” → Navigate to Add Comment Screen
+
+---
+### Employee
 ### 2. Dashboard
 **Purpose:** Display a high-level overview of tickets assigned to the logged-in user.
 
