@@ -12,12 +12,14 @@
 | status_id    | INT       | Current ticket status |
 | created_by   | INT    | Who created the ticket |
 | assigned_to | INT    | Who is currently assigned |
-| description      | String      | Issue description |
-| location         | String   | Issue location |
+| description      | VARCHAR      | Issue description |
+| location         | VARCHAR   | Issue location |
 | created_at       | TIMESTAMP | Creation time |
 | updated_at       | TIMESTAMP | Last update time |
 
 **Stores the current state of all tickets.**
+
+A customer can log a ticket in two ways: either by raising it themselves or by contacting the support team, who will create the ticket on their behalf.
 
 ---
 
@@ -27,23 +29,10 @@
 | comment_id     | INT    | Unique comment |
 | ticket_id     | INT    | Ticket reference |
 | commented_by   | INT    | User who commented |
-| comment_text       | String      | Comment content |
+| comment_text       | VARCHAR      | Comment content |
 | created_at         | TIMESTAMP | Comment time |
 
-**Why needed:** Tracks **all interactions on tickets** for audit and communication history.
-
----
-
-### 3. FACT_TICKET_ASSIGNMENT_HISTORY
-| Column Name          | Data Type  | Description |
-|----------------------|-----------|-------------|
-| assignment_id (PK)   | INT    | Unique assignment |
-| ticket_id       | INT    | Ticket reference |
-| assigned_to      | INT    | Technician assigned |
-| assigned_by      | INT    | Supervisor who assigned |
-| assigned_at          | TIMESTAMP | Assignment time |
-
-**Why needed:** Maintains **reassignment history** for accountability and performance tracking.
+**Tracks all interactions on tickets for maintaining history.**
 
 ---
 
@@ -57,9 +46,9 @@
 | role         | VARCHAR   | Technician / Supervisor / Admin |
 | phone        | VARCHAR   | Contact number |
 | email        | VARCHAR   | Email address |
-| is_active    | BOOLEAN   | Active flag |
+| is_active    | VARCHAR   | Active flag |
 
-**Why needed:** Stores **all user information** for assignments and actions.
+**Stores all user information for assignments and actions.**
 
 ---
 
@@ -71,7 +60,7 @@
 | address           | TEXT      | Address |
 | phone             | VARCHAR   | Contact |
 
-**Why needed:** Provides **customer details** linked to tickets.
+**Provides customer details linked to tickets.**
 
 ---
 
@@ -81,7 +70,7 @@
 | status_id (PK)| INT       | Status ID |
 | status_name   | VARCHAR   | Open / Assigned / In Progress / Resolved / Closed / Cancelled |
 
-**Why needed:** Defines **ticket lifecycle states** for workflow management.
+**Defines ticket lifecycle states.**
 
 ---
 
@@ -91,7 +80,7 @@
 | priority_id (PK)  | INT       | Priority ID |
 | priority_name     | VARCHAR   | Low / Medium / High / Critical |
 
-**Why needed:** Specifies **ticket urgency** to prioritize work.
+ **Specifies ticket urgency to prioritize work.** 
 
 ---
 
@@ -101,4 +90,4 @@
 | category_id (PK)  | INT       | Category ID |
 | category_name     | VARCHAR   | Network / Hardware / Software / Installation |
 
-**Why needed:** Categorizes **type of issues** for routing and reporting.
+**Categorizes type of issues for routing and reporting.**
