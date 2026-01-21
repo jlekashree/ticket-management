@@ -237,7 +237,11 @@ SELECT
     c.customer_name,
     c.address,
     s.status_name,
-    p.priority_name
+    p.priority_name,
+    cmt.comment_id,
+    cmt.commented_by,
+    cmt.comment_text,
+    cmt.created_at
 FROM tickets t
 JOIN customers c
   ON t.customer_id = c.customer_id
@@ -245,7 +249,7 @@ JOIN ticket_status s
   ON t.status_id = s.status_id
 JOIN ticket_priority p
   ON t.priority_id = p.priority_id
-LEFT JOIN ticket_comments c
+LEFT JOIN ticket_comments cmt
   ON t.ticket_id = c.ticket_id
 WHERE t.ticket_id = :ticket_id;
 ~~~
