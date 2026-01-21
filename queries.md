@@ -205,12 +205,4 @@
     ```
 * **On-click Action:** **Navigate to My Tickets** and highlight the new entry.
 
----
-
-## Notes & Best Practices
-1.  **Transactions:** Always use database transactions for multi-step updates (like *Cancel Ticket*) to ensure data integrity.
-2.  **Indexing:** Ensure indexes are created on frequently filtered columns:
-    * `tickets.assigned_to`
-    * `tickets.status_id`
-    * `tickets.created_at`
-3.  **Referential Integrity:** Enforce Foreign Key constraints between fact and dimension tables.
+-
