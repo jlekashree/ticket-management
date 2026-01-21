@@ -202,7 +202,7 @@ WITH employee_tickets AS (
     UNION ALL
     -- Closed tickets from history
     SELECT status_id, assigned_to
-    FROM ticket_history
+    FROM history
     WHERE assigned_to = :employee_id
 )
 
