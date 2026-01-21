@@ -60,6 +60,40 @@ CREATE TABLE ticket_comments (
 ~~~
 ---
 
+### 2. History
+| Column Name      | Data Type  | Description |
+|------------------|-----------|-------------|
+| ticket_id(PK)    | INT       | Unique ticket identifier |
+| customer_id  | INT       | customer ID |
+| category_id  | INT       | Issue type |
+| priority_id  | INT       | Ticket priority |
+| status_id    | INT       | Closed ticket status |
+| created_by   | INT    | Who created the ticket |
+| assigned_to | INT    | last assigned person id |
+| description      | VARCHAR      | Issue description |
+| created_at       | TIMESTAMP | ticket created time |
+| updated_at       | TIMESTAMP | Instered time  |
+
+**Tracks all interactions on tickets for maintaining history.**
+~~~sql
+CREATE TABLE tickets (
+    ticket_id INT PRIMARY KEY,
+    customer_id INT,
+    category_id INT,
+    priority_id INT,
+    status_id INT, --[only closed ticket]
+    created_by INT,
+    assigned_to INT,
+    description VARCHAR,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+    FOREIGN KEY (status_id) REFERENCES ticket_status(status_id),
+    FOREIGN KEY (priority_id) REFERENCES ticket_priority(priority_id)
+);
+~~~
+---
+
 ## Dimension Tables
 
 ### 4. USERS
