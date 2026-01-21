@@ -1,4 +1,4 @@
-# ticket-management - Screens & Flow
+# Ticket-management - Screens & Flow
 
 ## Customer Flow
 
