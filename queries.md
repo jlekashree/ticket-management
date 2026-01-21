@@ -278,12 +278,47 @@ ORDER BY status_id;
 ~~~
 
 **Action Query:**
-
+**update status:**
 ~~~sql
 UPDATE tickets
 SET status_id = :status_id,
     updated_at = CURRENT_TIMESTAMP
 WHERE ticket_id = :ticket_id;
+~~~
+**Insert Closed ticket to history:**
+~~~sql
+INSERT INTO ticket_history (
+    ticket_id,
+    customer_id,
+    category_id,
+    priority_id,
+    status_id,
+    created_by,
+    assigned_to,
+    description,
+    created_at,
+    closed_at
+)
+SELECT
+    ticket_id,
+    customer_id,
+    category_id,
+    priority_id,
+    status_id,
+    created_by,
+    assigned_to,
+    description,
+    created_at,
+    updated_at
+FROM tickets
+WHERE ticket_id = :ticket_id
+  AND status_id = 5;
+~~~
+**Delete Closed ticket in tickets table:**
+~~~sql
+DELETE FROM tickets
+WHERE ticket_id = :ticket_id
+  AND status_id = 5;
 ~~~
 
 **On-click Action:** Save changes and return to Ticket Details screen.
