@@ -166,6 +166,7 @@ FROM tickets t
 JOIN ticket_status s
   ON t.status_id = s.status_id
 WHERE t.assigned_to = :user_id
+AND t.status_id != 6
 GROUP BY s.status_name
 ORDER BY ticket_count DESC;
 ~~~
@@ -244,6 +245,8 @@ JOIN ticket_status s
   ON t.status_id = s.status_id
 JOIN ticket_priority p
   ON t.priority_id = p.priority_id
+LEFT JOIN ticket_comments c
+  ON t.ticket_id = c.ticket_id
 WHERE t.ticket_id = :ticket_id;
 ~~~
 
@@ -381,10 +384,3 @@ VALUES (
 
 **On-click Action:** Navigate to My Tickets and highlight the newly created ticket.
 
----
-
-## Additional Notes
-- Role-based access control (Agent vs Customer)
-- Closed or Cancelled tickets restrict further updates
-- Ticket comments act as a complete audit trail
-- Filters such as status, priority, and date range can be applied in ticket listing screens
