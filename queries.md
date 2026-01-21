@@ -95,7 +95,7 @@ VALUES (
     :customer_id,
     :category_id,
     :priority_id, --[open by default]
-    :open_status_id,
+    :1,
     :user_id,            
     :description,       
     NOW()
