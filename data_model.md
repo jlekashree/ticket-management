@@ -72,6 +72,7 @@ CREATE TABLE ticket_comments (
 | email        | VARCHAR   | Email address |
 | is_active    | VARCHAR   | Active flag |
 | customer_id    | INT   | customer id |
+| password_hash    | VARCHAR   | password |
 
 **Stores all user information for assignments and actions.**
 ~~~sql
@@ -83,6 +84,7 @@ CREATE TABLE users (
     is_active BOOLEAN,
     customer_id INT,  --[null for employees]    
     created_at TIMESTAMP,
+    password_hash VARCHAR,
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
 );
 ~~~
