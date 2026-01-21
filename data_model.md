@@ -72,7 +72,7 @@ CREATE TABLE ticket_comments (
 | assigned_to | INT    | last assigned person id |
 | description      | VARCHAR      | Issue description |
 | created_at       | TIMESTAMP | ticket created time |
-| updated_at       | TIMESTAMP | Instered time  |
+| closed_at       | TIMESTAMP | Colsed time  |
 
 **Tracks all interactions on tickets for maintaining history.**
 ~~~sql
@@ -86,7 +86,7 @@ CREATE TABLE History (
     assigned_to INT,
     description VARCHAR,
     created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    closed_at TIMESTAMP,
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
     FOREIGN KEY (status_id) REFERENCES ticket_status(status_id),
     FOREIGN KEY (priority_id) REFERENCES ticket_priority(priority_id)
