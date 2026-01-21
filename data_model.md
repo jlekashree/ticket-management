@@ -76,7 +76,7 @@ CREATE TABLE ticket_comments (
 
 **Tracks all interactions on tickets for maintaining history.**
 ~~~sql
-CREATE TABLE History (
+CREATE TABLE history (
     ticket_id INT PRIMARY KEY,
     customer_id INT,
     category_id INT,
