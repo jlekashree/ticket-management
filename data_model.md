@@ -10,7 +10,7 @@
 | category_id  | INT       | Issue type |
 | priority_id  | INT       | Ticket priority |
 | status_id    | INT       | Current ticket status |
-| created_by   | INT    | Who created the ticket(can be customers or support team) |
+| created_by   | INT    | Who created the ticket |
 | assigned_to | INT    | Who is currently assigned |
 | description      | VARCHAR      | Issue description |
 | created_at       | TIMESTAMP | Creation time |
