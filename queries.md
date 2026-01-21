@@ -57,6 +57,22 @@ JOIN ticket_priority tp ON t.priority_id = tp.priority_id
 WHERE t.customer_id = :customer_id
 ORDER BY t.created_at DESC;
 
+UNION ALL
+
+SELECT
+    h.ticket_id,
+    tc.category_name,
+    ts.status_name,
+    tp.priority_name,
+    h.created_at
+FROM history h
+JOIN ticket_category tc ON h.category_id = tc.category_id
+JOIN ticket_status ts ON h.status_id = ts.status_id
+JOIN ticket_priority tp ON h.priority_id = tp.priority_id
+WHERE h.customer_id = :customer_id
+
+ORDER BY created_at DESC
+
 ~~~
 
 **Reason:** Ensures that only tickets belonging to the logged-in customer are displayed and provides necessary details for overview.
@@ -138,7 +154,26 @@ JOIN ticket_priority tp ON t.priority_id = tp.priority_id
 JOIN ticket_category tc ON t.category_id = tc.category_id
 LEFT JOIN ticket_comments c ON t.ticket_id = c.ticket_id
 WHERE t.ticket_id = :ticket_id
-  AND t.customer_id = :customer_id;
+  AND t.customer_id = :customer_id
+UNION ALL
+
+SELECT
+    h.ticket_id,
+    h.description,
+    ts.status_name,
+    tp.priority_name,
+    tc.category_name,
+    c.comment_id,
+    c.commented_by,
+    c.comment_text,
+    c.created_at
+FROM history h
+JOIN ticket_status ts ON h.status_id = ts.status_id
+JOIN ticket_priority tp ON h.priority_id = tp.priority_id
+JOIN ticket_category tc ON h.category_id = tc.category_id
+LEFT JOIN ticket_comments c ON h.ticket_id = c.ticket_id
+WHERE h.ticket_id = :ticket_id
+  AND h.customer_id = :customer_id;
 ~~~
 
 **Reason:** Ensures only the owner of the ticket can view it; provides full ticket history.
@@ -159,16 +194,26 @@ WHERE t.ticket_id = :ticket_id
 **Data Query:**
 
 ~~~sql
+WITH employee_tickets AS (
+    -- Active tickets
+    SELECT status_id, assigned_to
+    FROM tickets
+    WHERE assigned_to = :employee_id
+    UNION ALL
+    -- Closed tickets from history
+    SELECT status_id, assigned_to
+    FROM ticket_history
+    WHERE assigned_to = :employee_id
+)
+
 SELECT
     s.status_name,
     COUNT(*) AS ticket_count
-FROM tickets t
-JOIN ticket_status s
-  ON t.status_id = s.status_id
-WHERE t.assigned_to = :user_id
-AND t.status_id != 6
+FROM employee_tickets t
+JOIN ticket_status s ON t.status_id = s.status_id
 GROUP BY s.status_name
 ORDER BY ticket_count DESC;
+
 ~~~
 
 **Reason:** Helps users quickly assess workload and prioritize tasks.
